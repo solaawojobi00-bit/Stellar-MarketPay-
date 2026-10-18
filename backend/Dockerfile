@@ -1,3 +1,18 @@
+# Development stage: full deps (incl. devDependencies), nodemon hot reload.
+# Build with: docker build --target dev ./backend  (or compose `target: dev`)
+FROM node:20-alpine AS dev
+
+WORKDIR /app
+ENV NODE_ENV=development
+COPY package*.json ./
+RUN npm ci
+COPY . .
+
+EXPOSE 4000
+
+# -L enables legacy polling so file changes reach the container on Docker Desktop
+CMD ["npx", "nodemon", "-L", "src/server.js"]
+
 FROM node:20-alpine AS builder
 
 WORKDIR /app

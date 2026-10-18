@@ -5,19 +5,20 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: dev
     ports:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_STELLAR_NETWORK=testnet
       - NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
       - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - WATCHPACK_POLLING=true
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
     depends_on:
       - backend
-    command: npm run dev
 
   redis:
     image: redis:7-alpine
@@ -34,6 +35,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: dev
     ports:
       - "4000:4000"
     environment:
@@ -43,6 +45,7 @@ services:
       - HORIZON_URL=https://horizon-testnet.stellar.org
       - ALLOWED_ORIGINS=http://localhost:3000
       - REDIS_URL=redis://redis:6379
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -57,7 +60,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
-    command: npm run dev
 
     
   postgres:

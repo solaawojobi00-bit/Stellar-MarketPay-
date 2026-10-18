@@ -1,3 +1,20 @@
+# Development stage: full deps (incl. devDependencies), `next dev` hot reload.
+# Build with: docker build --target dev ./frontend  (or compose `target: dev`)
+FROM node:20-alpine AS dev
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+ENV NODE_ENV development
+ENV NEXT_TELEMETRY_DISABLED 1
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
+COPY . .
+
+EXPOSE 3000
+
+# -H 0.0.0.0 makes the dev server reachable from the host
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
+
 # Stage 1: Install dependencies and build the app
 FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat

@@ -132,6 +132,16 @@ npm run migrate
 npm run migrate:rollback
 ```
 
+### Containerised dev loop (hot reload)
+
+`docker-compose.yml` builds the `frontend` and `backend` services against the `dev` target of their Dockerfiles (full dependencies, `next dev` / `nodemon`, source bind-mounted with file polling enabled):
+
+```bash
+docker compose up --build
+```
+
+Production images are the default (last) stage, so `docker build ./backend` or `docker build ./frontend` without `--target` is unchanged.
+
 ---
 
 ## 🔑 Environment Variables
